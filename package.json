@@ -1,0 +1,19 @@
+{
+  "name": "@jbernard3396/tile-bound",
+  "version": "0.1.0",
+  "description": "Tool to tile 2D games",
+  "main": "2D_Map_Reader.js",
+  "scripts": {
+    "test": "exit 0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jbernard3396/tile-bound.git"
+  },
+  "author": "Jacob Bernard",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jbernard3396/tile-bound/issues"
+  },
+  "homepage": "https://github.com/jbernard3396/tile-bound#readme"
+}
