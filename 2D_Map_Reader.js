@@ -344,4 +344,4 @@ function getVariations(object, dictionary){
     return null;
 }
 
-module.exports = { getElement, getSurroundingElements, parseRegionPage, createContextSensitiveTile, createTile, determineTile, getType, getVariations, transformCodeToArray, prepCodeForCsvTransformation, checkIfRequirementsMatch, randomInt, getRelevantMapSection};
+module.exports = { getElement, getSurroundingElements, parseRegionPage, createContextSensitiveTile, createTile, determineTile, getType, getVariations, transformCodeToArray, prepCodeForCsvTransformation, checkIfRequirementsMatch, randomInt, getRelevantMapSection, converter, objectDictionary};
