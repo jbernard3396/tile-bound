@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/jbernard3396/tile-bound/issues"
   },
-  "homepage": "https://github.com/jbernard3396/tile-bound#readme"
+  "homepage": "https://github.com/jbernard3396/tile-bound#readme",
+  "publishConfig": {
+    "@Jbernard3396:registry": "https://npm.pkg.github.com"
+  }
 }
