@@ -5,9 +5,9 @@ var requirementsList = [];
 
 
 //returns element if not out of bounds, otherwise returns null
-function getElement(array, x, y){
+function getElement(array, x, y, defaultValue = null){
     if(x < 0 || x >= array.length || y < 0 || y >= array[0].length){
-        return null;
+        return defaultValue;
     }
     return array[x][y];
 }
@@ -169,7 +169,8 @@ function getRelevantMapSection(requirements, map){
             let differenceX = i - requirementX;
             let differenceY = j - requirementY;
             //find the element in the map array that is the same difference from the @ character
-            relevantMapSection[i].push(map[x+differenceX][y+differenceY]);
+            let element = getElement(map, x + differenceX, y + differenceY, '0');
+            relevantMapSection[i].push(element);
         }
     }
     return relevantMapSection;
@@ -231,12 +232,12 @@ function checkIfRequirementsMatch(requirement, mapRequirements){
     for(let i = 0; i < requirement.length; i++){
         //iterate through the requirement array
         for(let j = 0; j < requirement[i].length; j++){
+            //if the index does not exist in the mapRequirements array, return false
+            if(mapRequirements[i] === undefined || mapRequirements[i][j] === undefined){
+                return false;
+            }
             //if the requirement is not a wildcard, check if the requirement matches the map requirement
             if(requirement[i][j] !== '0'){
-                //if no such index exists, return false
-                if(mapRequirements[i] === undefined || mapRequirements[i][j] === undefined){
-                    return false;
-                }
                 if(requirement[i][j] !== mapRequirements[i][j]){
                     return false;
                 }
