@@ -200,8 +200,8 @@ describe('2D_Map_Reader', function() {
             expect(mapReader.getRelevantMapSection([['0', '13', '7'], ['4', '@']], [['1', '2', '3'], ['4', '@', '6'], ['7', '8', '9']])).toStrictEqual([['1', '2', '3'], ['4', '@']]);
         });
 
-        test('pads with 0 when requirement size is big', () => {
-            expect(mapReader.getRelevantMapSection([['0', '13', '7'], ['4', '@', '8', '9']], [['1', '2', '3'], ['4', '@', '6'], ['7', '8', '9']])).toStrictEqual([['1', '2', '3'], ['4', '@', '6', '0']]);
+        test('pads with . when requirement size is big', () => {
+            expect(mapReader.getRelevantMapSection([['0', '13', '7'], ['4', '@', '8', '9']], [['1', '2', '3'], ['4', '@', '6'], ['7', '8', '9']])).toStrictEqual([['1', '2', '3'], ['4', '@', '6', '.']]);
         });
         
         test('returns just the above map element when correct', () => {
