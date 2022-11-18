@@ -4,7 +4,7 @@
   "description": "Tool to tile 2D games",
   "main": "2D_Map_Reader.js",
   "scripts": {
-    "test": "exit 0"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -18,5 +18,8 @@
   "homepage": "https://github.com/jbernard3396/tile-bound#readme",
   "publishConfig": {
     "@Jbernard3396:registry": "https://npm.pkg.github.com"
+  },
+  "dependencies": {
+    "jest": "^29.3.1"
   }
 }
