@@ -169,7 +169,7 @@ function getRelevantMapSection(requirements, map){
             let differenceX = i - requirementX;
             let differenceY = j - requirementY;
             //find the element in the map array that is the same difference from the @ character
-            let element = getElement(map, x + differenceX, y + differenceY, '0');
+            let element = getElement(map, x + differenceX, y + differenceY, '.');
             relevantMapSection[i].push(element);
         }
     }
