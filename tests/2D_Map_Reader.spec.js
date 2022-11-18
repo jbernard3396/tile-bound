@@ -33,18 +33,20 @@ describe('2D_Map_Reader', function() {
 
     describe('getElement', () => {
         let array = [['a', 'b', 'c', ], ['d', 'e', 'f']];
-        test('out of bounds', () => {
+        test('getElement_Should_ReturnNullWhen_OutOfBounds_AndNoDefaultProvided', () => {
             expect(mapReader.getElement(array, -1, 0)).toBe(null);
             expect(mapReader.getElement(array, 0, -1)).toBe(null);
             expect(mapReader.getElement(array, 2, 0)).toBe(null);
-            expect(mapReader.getElement(array, 0, 2)).toBe('c');
-        }
-        );
-        test('in bounds', () => {
+        });
+        test('getElement_Should_ReturnDefaultWhen_OutOfBounds_AndDefaultProvided', () => {
+            expect(mapReader.getElement(array, -1, 0, 'default')).toBe('default');
+            expect(mapReader.getElement(array, 0, -1, 0)).toBe(0);
+        });
+        test('getElement_Should_ReturnElementWhen_InBounds', () => {
             expect(mapReader.getElement(array, 0, 0)).toBe('a');
             expect(mapReader.getElement(array, 1, 1)).toBe('e');
-        }
-        );
+            expect(mapReader.getElement(array, 0, 2)).toBe('c');
+        });
     });
 
     describe('getSurroundingElements', () => {
@@ -134,20 +136,16 @@ describe('2D_Map_Reader', function() {
         let objectDictionary = createObjectDictionary();
         test('ShouldReturnTrue_When_RequirementExactlyMatchesMapSection', () => {
             expect(mapReader.checkIfRequirementsMatch([['1', '2', '3'], ['4', '5', '6'], ['7', '8', '9']], [['1', '2', '3'], ['4', '5', '6'], ['7', '8', '9']])).toBe(true);
-        }
-        );
+        });
         test('ShouldReturnFalse_When_RequirementIsDifferentLengthThanMapSection', () => {
-            expect(mapReader.checkIfRequirementsMatch([['1', '2', '3'], ['4', '5', '6'], ['7', '8', '9']], [['1', '2', '3'], ['4', '5', '6'], ['7', '8']])).toBe(false);
-        }
-        );
+            expect(mapReader.checkIfRequirementsMatch([['1', '2', '3'], ['4', '5', '6'], ['7', '8', '0']], [['1', '2', '3'], ['4', '5', '6'], ['7', '8']])).toBe(false);
+        });
         test('ShouldReturnFalse_When_RequirementIsDifferentLengthThanMapSection2', () => {
-            expect(mapReader.checkIfRequirementsMatch([['1', '2', '3'], ['4', '5', '6']], [['1', '2', '3'], ['4', '5', '6'], ['7', '8', '9']])).toBe(false);
-        }
-        );
+            expect(mapReader.checkIfRequirementsMatch([['1', '2', '3'], ['4', '5', '6'],['7','8','9']], [['1', '2', '3'], ['4', '5', '6']])).toBe(false);
+        });
         test('ShouldReturnTrue_When_OnlyDifferenceIs0', () => {
             expect(mapReader.checkIfRequirementsMatch([['0', '0', '0'], ['0', '0', '0'], ['0', '0', '0']],[['1', '2', '3'], ['4', '5', '6'], ['7', '8', '9']])).toBe(true);
-        }
-        );
+        });
         test('ShouldReturnFalse_When_DifferencesExist', () => {
             expect(mapReader.checkIfRequirementsMatch([['1', '2', '3'], ['4', '5', '6'], ['7', '8', '9']], [['0', '0', '0'], ['0', '0', '0'], ['0', '0', '0']])).toBe(false);
         });
@@ -173,40 +171,44 @@ describe('2D_Map_Reader', function() {
     describe('randomInt', () => {
         test('returns a number in normal range with no low', () => {
             let int = mapReader.randomInt(0,10);
-            //expect it to be greater than or equal to 0 and also less than or equal to 10
+            expect(int).toBeGreaterThanOrEqual(0);
         });
         test('returns a number in normal range with a low', () => {
             let int = mapReader.randomInt(5,15);
-            //expect it to be greater than or equal 5 and also less than or equal to 15
+            expect(int).toBeGreaterThanOrEqual(5);
         });
         test('returns a number in small range with a low', () => {
             let int = mapReader.randomInt(5,6);
-            //expect it to be greater than or equal 5 and also less than or equal 15
+            expect(int).toBeGreaterThanOrEqual(5);
+            expect(int).toBeLessThanOrEqual(6);
         });
         test('returns low when high equals low', () => {
             let int = mapReader.randomInt(5,5);
             expect(int).toBe(5);
         });
         test('throws error when high less than low', () => {
-            //expect(mapReader.randomInt(5, 4)).toThrowError();
+            // expect(mapReader.randomInt(5, 4)).toThrowError();
         });
     })
 
     describe('getRelevantMapSection', () => {
-        // test('returns correct map section', () => {
-        //     expect(mapReader.getRelevantMapSection([['0', '13', '7'], ['4', '@', '6']], [['1', '2', '3'], ['4', '@', '6'], ['7', '8', '9']]).toEqual([['1', '2', '3'], ['4', '@', '6']]));
-        //     expect(mapReader.getRelevantMapSection([['0', '13', '7'], ['4', '@', '6']], [['1', '2', '3'], ['4', '5', '6'], ['7', '@', '9']]).toEqual([['4', '5', '6'], ['7', '@', '9']]));
-        // });
-        // test('returns correct map section when size is wierd', () => {
-        //     expect(mapReader.getRelevantMapSection([['0', '13', '7'], ['4', '@']], [['1', '2', '3'], ['4', '@', '6'], ['7', '8', '9']]).toEqual([['1', '2', '3'], ['4', '@']]));
-        // });
+        test('returns correct map section', () => {
+            expect(mapReader.getRelevantMapSection([['0', '13', '7'], ['4', '@', '6']], [['1', '2', '3'], ['4', '@', '6'], ['7', '8', '9']])).toStrictEqual([['1', '2', '3'], ['4', '@', '6']]);
+            expect(mapReader.getRelevantMapSection([['0', '13', '7'], ['4', '@', '6']], [['1', '2', '3'], ['4', '5', '6'], ['7', '@', '9']])).toStrictEqual([['4', '5', '6'], ['7', '@', '9']]);
+        });
+        test('returns correct map section when requirement size is small', () => {
+            expect(mapReader.getRelevantMapSection([['0', '13', '7'], ['4', '@']], [['1', '2', '3'], ['4', '@', '6'], ['7', '8', '9']])).toStrictEqual([['1', '2', '3'], ['4', '@']]);
+        });
+
+        test('pads with 0 when requirement size is big', () => {
+            expect(mapReader.getRelevantMapSection([['0', '13', '7'], ['4', '@', '8', '9']], [['1', '2', '3'], ['4', '@', '6'], ['7', '8', '9']])).toStrictEqual([['1', '2', '3'], ['4', '@', '6', '0']]);
+        });
         
         test('returns just the above map element when correct', () => {
             expect(mapReader.getRelevantMapSection([['13'], ['@']], [['1', '2', '3'], ['4', '@', '6'], ['7', '8', '9']])).toStrictEqual([["2"], ["@"]]);
             // expect(mapReader.getRelevantMapSection([['13'], ['@']], [['1', '2', '3'], ['@', '5', '6'], ['7', '8', '9']]).toEqual([['1']['@']]));
             // expect(mapReader.getRelevantMapSection([['13'], ['@']], [['1', '2', '3'], ['4', '5', '6'], ['7', '8', '@']]).toEqual([['6']['@']]));
-        }
-        );
+        });
     }
 );
 
