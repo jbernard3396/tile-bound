@@ -15,6 +15,7 @@ function getElement(array, x, y){
 //takes a 2d array and an x,y coordinate, 
 //returns an object that uses plain text like "get_left" and "get_right" to get the surrounding elements
 // and the elements surrounding the x,y coordinate as keys
+//todo:J I think we can rip this out?
 function getSurroundingElements(array, x, y){
     let surrounding = {};
     surrounding['get_left'] = getElement(array, x - 1, y);
@@ -27,51 +28,6 @@ function getSurroundingElements(array, x, y){
     surrounding['get_down_right'] = getElement(array, x + 1, y + 1);
     return surrounding;
 }
-
-//TODO:J write a single function that writes all of these functions at compile time???????
-//eight functions that check if the surrounding element in a specfific direction is of a given type from the object dictionary
-//first function checks left
-function checkLeft(surroundings, type){
-    let object = getType([surroundings['get_left']]);
-    return object === type;
-}
-//second function checks right
-function checkRight(surroundings, type){
-    let object = getType([surroundings['get_right']]);
-    return object === type;
-}
-//third function checks up
-function checkUp(surroundings, type){
-    let object = getType([surroundings['get_up']]);
-    return object === type;
-}
-//fourth function checks down
-function checkDown(surroundings, type){
-    let object = getType([surroundings['get_down']]);
-    return object === type;
-}
-
-//TODO:J write the other four
-
-//populates the requirements list with the requirements for each variation
-// function populateRequirementsList(){
-//     for(let key in objectDictionary){
-//         for(let i = 0; i < objectDictionary[key].variations.length; i++){
-//             let variation = objectDictionary[key].variations[i];
-//             let requirements = variation.requirements;
-//             for(let j = 0; j < requirements.length; j++){
-//                 let requirement = requirements[j];
-//                 if(requirementsList.indexOf(requirement) === -1){
-//                     //load in the requirement from the csv
-//                     this.make.tilemap({ key: 'Isolated_Floating_Grass_csv', tileWidth: 32, tileHeight: 32 });
-//                     var mapData = this.cache.tilemap.get('Isolated_Floating_Grass_csv').data;
-//                     let requirementArray = converter.csvToArray(mapData);
-//                     requirementsList.push(requirementArray);
-//                 }
-//             }
-//         }
-//     }
-// }
 
 function parseRegionPage(mapArray, game, platforms){
     //converts a layer of tiles into a 2d array
@@ -266,53 +222,21 @@ function transformCodeToArray(code){
 }
 
 
-//TODO:J don't need surroundings, just need all of the csv
-// //get required surroundings from code
-// function getRequiredSurroundings(code){
-//     //get the code array
-//     let codeArray = transformCodeToArray(code);
-//     //get elements surrounding the center
-//     let surroundings = getSurroundingElements(codeArray, 1, 1);
-//     return surroundings;
-// }   
-
-//given surroundings from the map and surroundings derived from variation code, check if the types in each direction match
-//ignore directions for which code surroundings is 0
-//todo:J check if relevant csv matches 
-// function checkIfSurroundingsMatch(surroundings, codeSurroundings){
-//     //iterate through the keys
-//     for(let key in surroundings){
-//         //if the code surroundings is 0, ignore this direction
-//         if(codeSurroundings[key] === '0'){
-//             continue;
-//         }
-//         //if the code surroundings is not 0, check if the types match
-//         if(getType([surroundings[key]]) !== getType(codeSurroundings[key])){
-//             return false;
-//         }
-//     }
-//     return true;
-// }
-
 //for each element in the requirement 2d array, check if the corresponding element in the map csv matches
 //the '0' symbol indicates a wildcard
 //returns false if lengths of both arrays are not the same
 //returns true if all requirements are met
 function checkIfRequirementsMatch(requirement, mapRequirements){
-    //if the lengths of the arrays are not the same, return false
-    if(requirement.length !== mapRequirements.length){
-        return false;
-    }
     //iterate through the requirement array
     for(let i = 0; i < requirement.length; i++){
-        //if the length of the current requirement is not the same as the length of the map requirement, return false
-        if(requirement[i].length !== mapRequirements[i].length){
-            return false;
-        }
         //iterate through the requirement array
         for(let j = 0; j < requirement[i].length; j++){
             //if the requirement is not a wildcard, check if the requirement matches the map requirement
             if(requirement[i][j] !== '0'){
+                //if no such index exists, return false
+                if(mapRequirements[i] === undefined || mapRequirements[i][j] === undefined){
+                    return false;
+                }
                 if(requirement[i][j] !== mapRequirements[i][j]){
                     return false;
                 }
@@ -321,7 +245,6 @@ function checkIfRequirementsMatch(requirement, mapRequirements){
     }
     return true;
 }
-
 
 
 //todo:J these next two functions suck

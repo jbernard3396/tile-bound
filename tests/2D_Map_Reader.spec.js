@@ -134,20 +134,22 @@ describe('2D_Map_Reader', function() {
         let objectDictionary = createObjectDictionary();
         test('ShouldReturnTrue_When_RequirementExactlyMatchesMapSection', () => {
             expect(mapReader.checkIfRequirementsMatch([['1', '2', '3'], ['4', '5', '6'], ['7', '8', '9']], [['1', '2', '3'], ['4', '5', '6'], ['7', '8', '9']])).toBe(true);
-        }
-        );
-        test('ShouldReturnFalse_When_RequirementIsDifferentLengthThanMapSection', () => {
+        });
+        test('ShouldReturnFalse_When_RequirementIsDifferentLengthThanMapSection_AndMismatchedRequirementIsNotZero', () => {
             expect(mapReader.checkIfRequirementsMatch([['1', '2', '3'], ['4', '5', '6'], ['7', '8', '9']], [['1', '2', '3'], ['4', '5', '6'], ['7', '8']])).toBe(false);
-        }
-        );
-        test('ShouldReturnFalse_When_RequirementIsDifferentLengthThanMapSection2', () => {
-            expect(mapReader.checkIfRequirementsMatch([['1', '2', '3'], ['4', '5', '6']], [['1', '2', '3'], ['4', '5', '6'], ['7', '8', '9']])).toBe(false);
-        }
-        );
+        });
+        test('ShouldReturnTrue_When_RequirementIsDifferentLengthThanMapSection_AndMismatchedRequirementIsZero', () => {
+            expect(mapReader.checkIfRequirementsMatch([['1', '2', '3'], ['4', '5', '6'], ['7', '8', '0']], [['1', '2', '3'], ['4', '5', '6'], ['7', '8']])).toBe(true);
+        });
+        test('ShouldReturnFalse_When_RequirementIsDifferentLengthThanMapSection_AndMismatchedRequirementIsNotZero2', () => {
+            expect(mapReader.checkIfRequirementsMatch([['1', '2', '3'], ['4', '5', '6'],['7','8','9']], [['1', '2', '3'], ['4', '5', '6']])).toBe(false);
+        });
+        test('ShouldReturnTrue_When_RequirementIsDifferentLengthThanMapSection_AndMismatchedRequirementIsZero2', () => {
+            expect(mapReader.checkIfRequirementsMatch([['1', '2', '3'], ['4', '5', '6'],['0','0','0']], [['1', '2', '3'], ['4', '5', '6']])).toBe(true);
+        });
         test('ShouldReturnTrue_When_OnlyDifferenceIs0', () => {
             expect(mapReader.checkIfRequirementsMatch([['0', '0', '0'], ['0', '0', '0'], ['0', '0', '0']],[['1', '2', '3'], ['4', '5', '6'], ['7', '8', '9']])).toBe(true);
-        }
-        );
+        });
         test('ShouldReturnFalse_When_DifferencesExist', () => {
             expect(mapReader.checkIfRequirementsMatch([['1', '2', '3'], ['4', '5', '6'], ['7', '8', '9']], [['0', '0', '0'], ['0', '0', '0'], ['0', '0', '0']])).toBe(false);
         });
