@@ -80,11 +80,11 @@ describe('2D_Map_Reader', function() {
     describe('getType', () => {
         let objectDictionary = createObjectDictionary();
         test('in bounds', () => {
-            expect(mapReader.getType('#')).toBe('ground');
-            expect(mapReader.getType('.')).toBe('');
+            expect(mapReader.getType('#', objectDictionary)).toBe('ground');
+            expect(mapReader.getType('.', objectDictionary)).toBe('');
         });
         test('out of bounds', () => {
-            expect(mapReader.getType('a')).toBe(null);
+            expect(mapReader.getType('a', objectDictionary)).toBe(null);
         }
         );
     });

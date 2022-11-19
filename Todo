@@ -1,3 +1,5 @@
+IMPORTANT: Actually design how the interface works between this and the dudes that import it?  are we handling spriting only?  or also logic?  is logic stored in the mapObjectEnum? whats the dealio?
+
 Figure out a way to pull the object map out of this repository so that it can be passed in, while also providing it to users easily so that they don't have to create it themselves??
 
 pull the actual tile creation which is Phazer specific out and let the dependant package pass it in
@@ -7,3 +9,4 @@ Consider excluding tests from the release.  End users don't need them and won't 
 Hook up passing tests as a precondition for release
 
 fill out manual test steps
+

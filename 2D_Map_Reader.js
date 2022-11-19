@@ -72,7 +72,7 @@ function createContextSensitiveTile(x, y, object, map, game, platforms){
         tile = tiles[randomInt(0, tiles.length-1)];
     }
 
-    createTile(x, y, tile, game, platforms);
+    createTile(x, y, tile, object, platforms);
 }
 
 
@@ -109,12 +109,14 @@ function determineTile(object, map, game){
 }
 
 //creates the specified tile at the specified x,y coordinate
-function createTile(x, y, type, game, platforms){
-    if(type === '' || type === null || type === undefined){
+function createTile(x, y, sprite, type, platforms){
+    if(sprite === '' || sprite === null || sprite === undefined){
         return;
     }
 
-    platforms.create(16+x*32, 16+y*32, type);
+    if(getType(type) === 'ground'){
+        platforms.create(16+x*32, 16+y*32, sprite);
+    }
     
 }
 
@@ -250,10 +252,10 @@ function checkIfRequirementsMatch(requirement, mapRequirements){
 
 //todo:J these next two functions suck
 //getType from object dictionary
-function getType(object){
+function getType(object, dictionary){
     //check if the object is in the dictionary
-    if(object in objectDictionary){
-        return objectDictionary[object].type;
+    if(object in dictionary){
+        return dictionary[object].type;
     }
     //if not, return null
     return null;
