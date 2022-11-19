@@ -1,6 +1,6 @@
 {
   "name": "@jbernard3396/tile-bound",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Tool to tile 2D games",
   "main": "2D_Map_Reader.js",
   "scripts": {
