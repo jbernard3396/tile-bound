@@ -37,7 +37,7 @@ function whichTile(mapArray, x, y){
     //TODO: pull this into function 
     let object = "" + getElement(mapArray, x, y) + "";
     //return the tile            
-    return determineContextSensitiveTile(object, mapWithAt(mapArray, i, j));     
+    return determineContextSensitiveTile(object, mapWithAt(mapArray, x, y));     
 }
 
 //mapWithAt returns the map array with the specified element changed to an '@'
