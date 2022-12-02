@@ -1,7 +1,8 @@
 var converter = require('./csv_Converter.js');
-var objectDictionary = require('./mapObjectEnum.js').objectDictionary;
+var mapEnum = require('./mapObjectEnum.js');
+var objectDictionary = mapEnum.objectDictionary;
 
-var requirementsList = [];
+var fs = require('fs');
 
 
 //returns element if not out of bounds, otherwise returns null
@@ -29,19 +30,14 @@ function getSurroundingElements(array, x, y){
     return surrounding;
 }
 
-function parseRegionPage(mapArray, game, platforms){
-    //converts a layer of tiles into a 2d array
-    let array = mapArray;
-   //for each element in the array, creates a context sensitive tile at that x,y coordinate
-    for(let i = 0; i < array.length; i++){
-        for(let j = 0; j < array[i].length; j++){
-            //get the object representation of the element at this x,y coordinate
-            //TODO: pull this into function 
-            let object = "" + getElement(array, i, j) + "";
-            //create the tile            
-            createContextSensitiveTile(i, j, object, mapWithAt(array, i, j), game, platforms);
-        }
-    }       
+
+function whichTile(mapArray, x, y){
+  
+    //get the object representation of the element at this x,y coordinate
+    //TODO: pull this into function 
+    let object = "" + getElement(mapArray, x, y) + "";
+    //return the tile            
+    return determineContextSensitiveTile(object, mapWithAt(mapArray, i, j));     
 }
 
 //mapWithAt returns the map array with the specified element changed to an '@'
@@ -63,20 +59,19 @@ function mapWithAt(array, x, y){
 
 //creates a context sensitive tile at the specified x,y coordinate
 //for now just creates a tile
-function createContextSensitiveTile(x, y, object, map, game, platforms){
+function determineContextSensitiveTile(object, map){
     //create a tile with the specified type at the specified x,y coordinate
-    let tiles = determineTile(object, map, game);
+    let tiles = determineTile(object, map);
     //return a random tile from the list
     let tile = tiles[0];
     if(tiles.length > 0){
         tile = tiles[randomInt(0, tiles.length-1)];
     }
 
-    createTile(x, y, tile, game, platforms);
+    return tile;
 }
 
 
-//todo:J check if random can return 1, if it can't, then this is right
 function randomInt(lo, hi){
     if(hi < lo){
         throw new Error("High must be greater than low");
@@ -88,7 +83,7 @@ function randomInt(lo, hi){
 }
 
 //determine tile based on type and surroundings and variation code
-function determineTile(object, map, game){
+function determineTile(object, map){
     //get variations for the given type
     let variationList = getVariations(object, objectDictionary);
     //iterate through the variations
@@ -97,7 +92,7 @@ function determineTile(object, map, game){
     //todo:J loop through the requirements list
         let csv = variationList[i].requirements[0];
         //convert to requirements
-        let requirement = getRequirementsFromCsv(csv, game);
+        let requirement = getRequirementsFromCsv(csv);
         let relevantMapSection = getRelevantMapSection(requirement, map);
         //check if the surroundings match the surroundings object
         if(checkIfRequirementsMatch(requirement, relevantMapSection)){
@@ -108,22 +103,13 @@ function determineTile(object, map, game){
     return '';
 }
 
-//creates the specified tile at the specified x,y coordinate
-function createTile(x, y, type, game, platforms){
-    if(type === '' || type === null || type === undefined){
-        return;
-    }
-
-    platforms.create(16+x*32, 16+y*32, type);
-    
-}
-
 
 //imports a csv file and converts it to an array
-function getRequirementsFromCsv(csv, game){
-    game.make.tilemap({ key: csv, tileWidth: 32, tileHeight: 32 });
-    var mapData = game.cache.tilemap.get(csv).data;
-    let array = converter.convertCSVToArrayAndFlip(mapData);
+function getRequirementsFromCsv(csv){
+    //get the csv file
+    let csvFile = fs.readFileSync(csv, 'utf8');
+    //convert the csv file to an array
+    let array = converter.convertCSVToArrayAndFlip(csvFile);
     return array;
 }
 
@@ -268,4 +254,4 @@ function getVariations(object, dictionary){
     return null;
 }
 
-module.exports = { getElement, getSurroundingElements, parseRegionPage, createContextSensitiveTile, createTile, determineTile, getType, getVariations, transformCodeToArray, prepCodeForCsvTransformation, checkIfRequirementsMatch, randomInt, getRelevantMapSection, converter, objectDictionary};
+module.exports = { getRequirementsFromCsv, getElement, getSurroundingElements, whichTile, determineTile, getType, getVariations, transformCodeToArray, prepCodeForCsvTransformation, checkIfRequirementsMatch, randomInt, getRelevantMapSection, converter, mapEnum};

@@ -1,3 +1,4 @@
+//todo:J test whichTile
 const mapReader = require('../2D_Map_Reader');
 
 //function to create an object dictionary
@@ -209,9 +210,14 @@ describe('2D_Map_Reader', function() {
             // expect(mapReader.getRelevantMapSection([['13'], ['@']], [['1', '2', '3'], ['@', '5', '6'], ['7', '8', '9']]).toEqual([['1']['@']]));
             // expect(mapReader.getRelevantMapSection([['13'], ['@']], [['1', '2', '3'], ['4', '5', '6'], ['7', '8', '@']]).toEqual([['6']['@']]));
         });
-    }
-);
+    });
 
+    describe('getRequirementsFromCsv', () => {
+        test('returns correct requirements', () => {
+            //pass in requirementTest.csv
+            expect(mapReader.getRequirementsFromCsv('./tests/requirementTest.csv')).toStrictEqual([['1', '2', '3'], ['4', '5', '6'], ['7', '8', '9']]);
+        })
+    });
 });
 
 // parseRegionPage(layer), createContextSensitiveTile(x, y, type, surroundings), createTile(x, y, type) can't be unit tested effectively because they are functional

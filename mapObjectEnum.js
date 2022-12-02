@@ -115,4 +115,19 @@ objectDictionary = {
     },
 }
 
-module.exports = { objectDictionary };
+function addObject(symbol, type, variations) {
+    objectDictionary[symbol] = {
+        type: type,
+        variations: variations
+    }
+}
+
+function getObject(symbol) {
+    return objectDictionary[symbol]
+}
+
+function updateObject(symbol, key, value) {
+    objectDictionary[symbol][key] = value
+}
+
+module.exports = { objectDictionary, addObject, getObject, updateObject };
