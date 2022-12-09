@@ -1,7 +1,4 @@
 var converter = require('./csv_Converter.js');
-var mapEnum = require('./mapObjectEnum.js');
-var objectDictionary = mapEnum.objectDictionary;
-
 var fs = require('fs');
 
 
@@ -13,31 +10,13 @@ function getElement(array, x, y, defaultValue = null){
     return array[x][y];
 }
 
-//takes a 2d array and an x,y coordinate, 
-//returns an object that uses plain text like "get_left" and "get_right" to get the surrounding elements
-// and the elements surrounding the x,y coordinate as keys
-//todo:J I think we can rip this out?
-function getSurroundingElements(array, x, y){
-    let surrounding = {};
-    surrounding['get_left'] = getElement(array, x - 1, y);
-    surrounding['get_right'] = getElement(array, x + 1, y);
-    surrounding['get_up'] = getElement(array, x, y - 1);
-    surrounding['get_down'] = getElement(array, x, y + 1);
-    surrounding['get_up_left'] = getElement(array, x - 1, y - 1);
-    surrounding['get_up_right'] = getElement(array, x + 1, y - 1);
-    surrounding['get_down_left'] = getElement(array, x - 1, y + 1);
-    surrounding['get_down_right'] = getElement(array, x + 1, y + 1);
-    return surrounding;
-}
-
-
-function whichTile(mapArray, x, y){
+function whichTile(mapArray, objectDictionary, x, y){
   
     //get the object representation of the element at this x,y coordinate
     //TODO: pull this into function 
     let object = "" + getElement(mapArray, x, y) + "";
     //return the tile            
-    return determineContextSensitiveTile(object, mapWithAt(mapArray, x, y));     
+    return determineContextSensitiveTile(object, mapWithAt(mapArray, x, y), objectDictionary);     
 }
 
 //mapWithAt returns the map array with the specified element changed to an '@'
@@ -59,9 +38,10 @@ function mapWithAt(array, x, y){
 
 //creates a context sensitive tile at the specified x,y coordinate
 //for now just creates a tile
-function determineContextSensitiveTile(object, map){
+function determineContextSensitiveTile(object, map, objectDictionary){
     //create a tile with the specified type at the specified x,y coordinate
-    let tiles = determineTile(object, map);
+    let tiles = determineTile(object, map, objectDictionary);
+    console.log('tiles ' + tiles);
     //return a random tile from the list
     let tile = tiles[0];
     if(tiles.length > 0){
@@ -83,9 +63,10 @@ function randomInt(lo, hi){
 }
 
 //determine tile based on type and surroundings and variation code
-function determineTile(object, map){
+function determineTile(object, map, objectDictionary){
     //get variations for the given type
     let variationList = getVariations(object, objectDictionary);
+    console.log(variationList);
     //iterate through the variations
     for(let i = 0; i < variationList.length; i++){
     //for each code, get the surroundings object
@@ -95,7 +76,10 @@ function determineTile(object, map){
         let requirement = getRequirementsFromCsv(csv);
         let relevantMapSection = getRelevantMapSection(requirement, map);
         //check if the surroundings match the surroundings object
+        console.log('relevantMapSection: ' + relevantMapSection);
+        console.log('requirement: ' + requirement);
         if(checkIfRequirementsMatch(requirement, relevantMapSection)){
+            console.log('match');
             //if they match, return the tile
             return variationList[i].tiles;
         }
@@ -106,9 +90,14 @@ function determineTile(object, map){
 
 //imports a csv file and converts it to an array
 function getRequirementsFromCsv(csv){
-    //get the csv file
-    let csvFile = fs.readFileSync(csv, 'utf8');
-    //convert the csv file to an array
+    let csvFile;
+    try{
+        csvFile = fs.readFileSync(csv, 'utf8');
+    }
+    catch(err){
+        throw new Error("CSV file  " + csv + "not found");
+    }
+    
     let array = converter.convertCSVToArrayAndFlip(csvFile);
     return array;
 }
@@ -171,8 +160,6 @@ function getRelevantMapSection(requirements, map){
 //desired = 0, 1 
 
 
-//TODO:J move the rest of this to a new file
-
 //takes a string of 9 characters and preps for CSV transformation
 //012345678
 //=>
@@ -233,18 +220,7 @@ function checkIfRequirementsMatch(requirement, mapRequirements){
     return true;
 }
 
-
-//todo:J these next two functions suck
-//getType from object dictionary
-function getType(object){
-    //check if the object is in the dictionary
-    if(object in objectDictionary){
-        return objectDictionary[object].type;
-    }
-    //if not, return null
-    return null;
-}
-
+//todo:J this functions suck because they exist here.  they should be on the mapOpjectEnum class.
 function getVariations(object, dictionary){
     //check if the object is in the dictionary
     if(object in dictionary){
@@ -254,4 +230,4 @@ function getVariations(object, dictionary){
     return null;
 }
 
-module.exports = { getRequirementsFromCsv, getElement, getSurroundingElements, whichTile, determineTile, getType, getVariations, transformCodeToArray, prepCodeForCsvTransformation, checkIfRequirementsMatch, randomInt, getRelevantMapSection, converter, mapEnum};
+module.exports = { getRequirementsFromCsv, getElement, whichTile, determineTile, getVariations, transformCodeToArray, prepCodeForCsvTransformation, checkIfRequirementsMatch, randomInt, getRelevantMapSection, converter};

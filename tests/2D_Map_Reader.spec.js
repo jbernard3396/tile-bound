@@ -1,4 +1,3 @@
-//todo:J test whichTile
 const mapReader = require('../2D_Map_Reader');
 
 //function to create an object dictionary
@@ -11,16 +10,16 @@ function createObjectDictionary() {
             type: 'ground',
             variations: [
                 {
-                    requirements: ['000.0#0#0'],
-                    images: ['left_standing_grass']
+                    requirements: ['./tests/requirementTest.csv'],
+                    tiles: ['left_standing_grass']
                 },
                 {
-                    requirements: ['000#0#0#0'],
-                    images: ['middle_standing_grass']
+                    requirements: ['./tests/requirementTest.csv'],
+                    tiles: ['middle_standing_grass']
                 },
                 {
-                    requirements: ['000#0.0#0'],
-                    images: ['right_standing_grass'],
+                    requirements: ['./tests/rightStandingGrassRequirementTest.csv'],
+                    tiles: ['right_standing_grass'],
                 }
             ]
         },
@@ -50,50 +49,10 @@ describe('2D_Map_Reader', function() {
         });
     });
 
-    describe('getSurroundingElements', () => {
-        let array = [['1', '4', '7'], ['2', '5', '8'], ['3', '6', '9']];
-        test('in bounds', () => {
-            expect(mapReader.getSurroundingElements(array, 1, 1)).toEqual({
-                'get_up': '2',
-                'get_up_right': '3',
-                'get_right': '6',
-                'get_down_right': '9',
-                'get_down': '8',
-                'get_down_left': '7',
-                'get_left': '4',
-                'get_up_left': '1'
-            });
-        });
-        test('out of bounds', () => {
-            expect(mapReader.getSurroundingElements(array, -1, 0)).toEqual({
-                'get_up': null,
-                'get_up_right': null,
-                'get_right': '1',
-                'get_down_right': '4',
-                'get_down': null,
-                'get_down_left': null,
-                'get_left': null,
-                'get_up_left': null
-            });
-        });  
-    });
-
-    describe('getType', () => {
+    describe('getVariations', () => {
         let objectDictionary = createObjectDictionary();
         test('in bounds', () => {
-            expect(mapReader.getType('#')).toBe('ground');
-            expect(mapReader.getType('.')).toBe('');
-        });
-        test('out of bounds', () => {
-            expect(mapReader.getType('a')).toBe(null);
-        }
-        );
-    });
-
-    describe('getVariation', () => {
-        let objectDictionary = createObjectDictionary();
-        test('in bounds', () => {
-            expect(mapReader.getVariations('#', objectDictionary)).toStrictEqual([{"images": ["left_standing_grass"], "requirements": ["000.0#0#0"]}, {"images": ["middle_standing_grass"], "requirements": ["000#0#0#0"]}, {"images": ["right_standing_grass"], "requirements": ["000#0.0#0"]}]);
+            expect(mapReader.getVariations('#', objectDictionary)).toStrictEqual([{"tiles": ["left_standing_grass"], "requirements": ["./tests/requirementTest.csv"]}, {"tiles": ["middle_standing_grass"], "requirements": ["./tests/requirementTest.csv"]}, {"tiles": ["right_standing_grass"], "requirements": ["./tests/rightStandingGrassRequirementTest.csv"]}]);
         }
         );
         test('out of bounds', () => {
@@ -134,7 +93,6 @@ describe('2D_Map_Reader', function() {
     });
 
     describe('checkIfRequirementsMatch', () => {
-        let objectDictionary = createObjectDictionary();
         test('ShouldReturnTrue_When_RequirementExactlyMatchesMapSection', () => {
             expect(mapReader.checkIfRequirementsMatch([['1', '2', '3'], ['4', '5', '6'], ['7', '8', '9']], [['1', '2', '3'], ['4', '5', '6'], ['7', '8', '9']])).toBe(true);
         });
@@ -151,23 +109,6 @@ describe('2D_Map_Reader', function() {
             expect(mapReader.checkIfRequirementsMatch([['1', '2', '3'], ['4', '5', '6'], ['7', '8', '9']], [['0', '0', '0'], ['0', '0', '0'], ['0', '0', '0']])).toBe(false);
         });
     });
-
-    // describe('determineTile', () => {
-    //     let objectDictionary = createObjectDictionary();
-    //     test('Returns correct tile', () => {
-    //         expect(mapReader.determineTile('#', {
-    //             'get_up': '.',
-    //             'get_up_right': '.',
-    //             'get_right': '#',
-    //             'get_down_right': '.',
-    //             'get_down': '#',
-    //             'get_down_left': '.',
-    //             'get_left': '#',
-    //             'get_up_left': '.'
-    //             })).toStrictEqual(["middle_standing_grass"]);
-    //     }
-    //     );
-    // });
 
     describe('randomInt', () => {
         test('returns a number in normal range with no low', () => {
@@ -207,18 +148,32 @@ describe('2D_Map_Reader', function() {
         
         test('returns just the above map element when correct', () => {
             expect(mapReader.getRelevantMapSection([['13'], ['@']], [['1', '2', '3'], ['4', '@', '6'], ['7', '8', '9']])).toStrictEqual([["2"], ["@"]]);
-            // expect(mapReader.getRelevantMapSection([['13'], ['@']], [['1', '2', '3'], ['@', '5', '6'], ['7', '8', '9']]).toEqual([['1']['@']]));
-            // expect(mapReader.getRelevantMapSection([['13'], ['@']], [['1', '2', '3'], ['4', '5', '6'], ['7', '8', '@']]).toEqual([['6']['@']]));
         });
     });
 
     describe('getRequirementsFromCsv', () => {
         test('returns correct requirements', () => {
             //pass in requirementTest.csv
-            expect(mapReader.getRequirementsFromCsv('./tests/requirementTest.csv')).toStrictEqual([['1', '2', '3'], ['4', '5', '6'], ['7', '8', '9']]);
+            expect(mapReader.getRequirementsFromCsv('./tests/requirementTest.csv')).toStrictEqual([['1', '2', '3'], ['4', '@', '6'], ['7', '8', '9']]);
         })
+        test('throws error when argument does not exist', () => {
+            expect(() => mapReader.getRequirementsFromCsv('')).toThrowError();
+        });
+    });
+
+    describe('whichTile', () => {
+        test('returns correct tile', () => {
+            mapArray = [['#', '.', '#'], ['#', '#', '.'], ['#', '#', '#']];
+            var objectDictionary = createObjectDictionary();
+            expect(mapReader.whichTile(mapArray, objectDictionary,1,1)).toBe('right_standing_grass');
+        });
+    });
+
+    describe('determineTile', () => {
+        test('returns correct tile', () => {
+            mapArray = [['#', '.', '#'], ['#', '@', '.'], ['#', '#', '#']];
+            var objectDictionary = createObjectDictionary();
+            expect(mapReader.determineTile('#',mapArray, objectDictionary)).toStrictEqual(['right_standing_grass']);
+        });
     });
 });
-
-// parseRegionPage(layer), createContextSensitiveTile(x, y, type, surroundings), createTile(x, y, type) can't be unit tested effectively because they are functional
-// consider using a mock object for the map
