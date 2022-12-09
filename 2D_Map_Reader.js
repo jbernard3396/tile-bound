@@ -1,4 +1,5 @@
 var converter = require('./csv_Converter.js');
+var objectDictionary = require('./object_Dictionary.js');
 var fs = require('fs');
 
 
@@ -230,4 +231,4 @@ function getVariations(object, dictionary){
     return null;
 }
 
-module.exports = { getRequirementsFromCsv, getElement, whichTile, determineTile, getVariations, transformCodeToArray, prepCodeForCsvTransformation, checkIfRequirementsMatch, randomInt, getRelevantMapSection, converter};
+module.exports = { getRequirementsFromCsv, getElement, whichTile, determineTile, getVariations, transformCodeToArray, prepCodeForCsvTransformation, checkIfRequirementsMatch, randomInt, getRelevantMapSection, objectDictionary, converter};
