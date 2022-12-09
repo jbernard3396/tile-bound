@@ -1,3 +1,11 @@
 Consider excluding tests from the release.  End users don't need them and won't run them
 
 Hook up passing tests as a precondition for release
+
+refactor 2d_map_reader into multiple files, i think?
+
+make a main file that brings in and exposes all of the files
+
+move getType and getVariation into the mapObjectEnum file
+
+Bring the example requirements and example assets back into this project

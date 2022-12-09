@@ -99,10 +99,6 @@ objectDictionary = {
             requirements: ['Isolated_Bottom_Stone_csv'],
             tiles: ['Isolated_Bottom_Stone.png']
         },
-        // {
-        //     requirements: ['Isolated_Floating_Grass_csv'],
-        //     tiles: ['Isolated_Floating_Grass.png'],
-        // },
         {
             requirements: ['Isolated_Under_Stone_csv'],
             tiles: ['Isolated_Under_Stone.png'],
