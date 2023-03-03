@@ -1,6 +1,5 @@
 var converter = require('./csv_Converter.js');
 var mapEnum = require('./mapObjectEnum.js');
-var fs = require('fs');
 
 
 //returns element if not out of bounds, otherwise returns null
@@ -12,7 +11,6 @@ function getElement(array, x, y, defaultValue = null){
 }
 
 function whichTile(mapArray, objectDictionary, x, y){
-  
     //get the object representation of the element at this x,y coordinate
     //TODO: pull this into function 
     let object = "" + getElement(mapArray, x, y) + "";
@@ -42,7 +40,6 @@ function mapWithAt(array, x, y){
 function determineContextSensitiveTile(object, map, objectDictionary){
     //create a tile with the specified type at the specified x,y coordinate
     let tiles = determineTile(object, map, objectDictionary);
-    console.log('tiles ' + tiles);
     //return a random tile from the list
     let tile = tiles[0];
     if(tiles.length > 0){
@@ -67,7 +64,6 @@ function randomInt(lo, hi){
 function determineTile(object, map, objectDictionary){
     //get variations for the given type
     let variationList = getVariations(object, objectDictionary);
-    console.log(variationList);
     //iterate through the variations
     for(let i = 0; i < variationList.length; i++){
     //for each code, get the surroundings object
@@ -77,10 +73,7 @@ function determineTile(object, map, objectDictionary){
         let requirement = getRequirementsFromCsv(csv);
         let relevantMapSection = getRelevantMapSection(requirement, map);
         //check if the surroundings match the surroundings object
-        console.log('relevantMapSection: ' + relevantMapSection);
-        console.log('requirement: ' + requirement);
         if(checkIfRequirementsMatch(requirement, relevantMapSection)){
-            console.log('match');
             //if they match, return the tile
             return variationList[i].tiles;
         }
@@ -91,15 +84,7 @@ function determineTile(object, map, objectDictionary){
 
 //imports a csv file and converts it to an array
 function getRequirementsFromCsv(csv){
-    let csvFile;
-    try{
-        csvFile = fs.readFileSync(csv, 'utf8');
-    }
-    catch(err){
-        throw new Error("CSV file  " + csv + "not found");
-    }
-    
-    let array = converter.convertCSVToArrayAndFlip(csvFile);
+    let array = converter.convertCSVToArrayAndFlip(csv);
     return array;
 }
 

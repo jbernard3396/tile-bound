@@ -9,3 +9,5 @@ make a main file that brings in and exposes all of the files
 move getType and getVariation into the mapObjectEnum file
 
 Bring the example requirements and example assets back into this project
+
+regex matching
